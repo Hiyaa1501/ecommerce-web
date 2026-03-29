@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HIE STORE | 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <h2>MyStore</h2>
+        <div class="search-controls">
+            <input type="text" id="search" placeholder="Search..." onkeyup="searchProducts()">
+            <select id="categoryFilter" onchange="filterCategory()">
+                <option value="all">All Categories</option>
+                <option value="electronics">Electronics</option>
+                <option value="clothing">Clothing</option>
+            </select>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="form-container">
+            <h3>Add New Product</h3>
+            <select id="nameInput">
+                <option value="" disabled selected>Select Product</option>
+                <option value="Backpack">Backpack</option>
+                <option value="OnePlus Buds">OnePlus Buds</option>
+                <option value="Iphone">Iphone</option>
+                <option value="Android Phone">Android Phone</option>
+                <option value="Bodycone">Bodycone</option>
+                <option value="Top">Top</option>
+            </select>
+            <input type="number" id="priceInput" placeholder="Price (₹)">
+            <select id="categoryInput">
+                <option value="electronics">Electronics</option>
+                <option value="clothing">Clothing</option>
+            </select>
+            <button onclick="addProduct()">Add Product</button>
+        </section>
+
+        <div class="main-content">
+            <div class="products-section">
+                <div id="product-list" class="product-grid"></div>
+            </div>
+            <aside class="cart-section">
+                <h3>Your Cart</h3>
+                <ul id="cart"></ul>
+                <div id="cart-total"><strong>Total: ₹0.00</strong></div>
+                <button onclick="checkout()" style="width:100%; margin-top:10px;">Checkout</button>
+            </aside>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
