@@ -1,123 +1,123 @@
 const API_URL = "http://localhost:8080/api/products";
 let cart = [];
 
+const productTemplates = {
+    'Iphone': { price: 75000, category: 'electronics', img: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400' },
+    'Android Phone': { price: 25000, category: 'electronics', img: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400' },
+    'Laptop': { price: 65000, category: 'electronics', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400' },
+    'OnePlus Buds': { price: 4999, category: 'electronics', img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400' },
+    'Smart Watch': { price: 12000, category: 'electronics', img: 'https://images.unsplash.com/photo-1544117518-30dd0f7a5932?w=400' },
+    'Backpack': { price: 2500, category: 'clothing', img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400' },
+    'Top': { price: 1200, category: 'clothing', img: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=400' },
+    'Sneakers': { price: 5500, category: 'clothing', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400' },
+    'Sunglasses': { price: 1800, category: 'clothing', img: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400' }
+};
+
 window.onload = loadProducts;
 
+// Step 1: Selection Logic
+function selectTemplate(name) {
+    const template = productTemplates[name];
+    if (template) {
+        document.getElementById("nameInput").value = name;
+        document.getElementById("priceInput").value = template.price;
+        document.getElementById("categoryInput").value = template.category;
+        
+        const btn = document.getElementById("addBtn");
+        btn.disabled = false;
+        btn.style.opacity = "1";
+
+        document.querySelectorAll('.selectable-item').forEach(el => el.classList.remove('active'));
+        // Highlighting the selected item
+        event.currentTarget.classList.add('active');
+    }
+}
+
+// Step 2: Add to Database
+async function addProduct() {
+    const name = document.getElementById("nameInput").value;
+    const price = document.getElementById("priceInput").value;
+    const category = document.getElementById("categoryInput").value;
+
+    await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, price: parseFloat(price), category })
+    });
+    
+    document.getElementById("addBtn").disabled = true;
+    loadProducts(); // Refresh store list
+}
+
+// Step 3: Display Store Items
 async function loadProducts() {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    renderProducts(data);
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        renderProducts(data);
+    } catch (err) { console.log("Backend offline..."); }
 }
 
 function renderProducts(products) {
     const list = document.getElementById("product-list");
-    list.innerHTML = products.map(p => `
-        <div class="product-card">
-            <h3>${p.name}</h3>
-            <p>₹${p.price.toFixed(2)}</p>
-            <div class="card-actions">
-                <button onclick="addToCart('${p.name}', ${p.price})">Cart</button>
-                <button onclick="deleteProduct(${p.id})";">Delete</button>
+    const fallback = "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400";
+
+    list.innerHTML = products.map(p => {
+        const key = Object.keys(productTemplates).find(k => k.toLowerCase() === p.name.toLowerCase());
+        const img = key ? productTemplates[key].img : fallback;
+
+        return `
+            <div class="product-card">
+                <img src="${img}" onerror="this.src='${fallback}'">
+                <div class="product-info">
+                    <h3>${p.name}</h3>
+                    <p>₹${p.price.toLocaleString('en-IN')}</p>
+                    <div class="card-actions">
+                        <button class="cart-btn" onclick="addToCart('${p.name}', ${p.price}, ${p.id})">Add to Cart</button>
+                        <button class="del-btn" onclick="deleteProduct(${p.id})">Delete</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
-function addToCart(name, price) {
-    cart.push({ name, price: parseFloat(price) });
+// THE "INVENTORY" LOGIC: Move from Store to Cart
+async function addToCart(name, price, id) {
+    // Add to Cart Array
+    cart.push({ name, price });
     updateCartUI();
+
+    // Delete from Store DB so it disappears from the shelf
+    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    loadProducts(); 
 }
 
 function updateCartUI() {
     const cartList = document.getElementById("cart");
     const totalDisplay = document.getElementById("cart-total");
+    cartList.innerHTML = cart.map(i => `<li><span>${i.name}</span> <span>₹${i.price.toLocaleString('en-IN')}</span></li>`).join('');
+    const total = cart.reduce((sum, i) => sum + i.price, 0);
+    totalDisplay.innerHTML = `<strong>Total: ₹${total.toLocaleString('en-IN')}</strong>`;
+}
 
-    cartList.innerHTML = cart.map((item, index) => `
-        <li>
-            <span>${item.name}</span> 
-            <span>₹${item.price.toFixed(2)}</span>
-        </li>
-    `).join('');
-
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    totalDisplay.innerHTML = `<strong>Total: ₹${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}</strong>`;
+async function searchProducts() {
+    const term = document.getElementById("search").value.toLowerCase();
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    renderProducts(data.filter(p => p.name.toLowerCase().includes(term)));
 }
 
 async function deleteProduct(id) {
-    if (!id || !confirm("Delete this product?")) return;
-
-    try {
-        const response = await fetch(`http://localhost:8080/api/products/${id}`, {
-            method: 'DELETE',
-            // Do NOT add 'Content-Type' for a DELETE request with no body
-        });
-
-        if (response.ok) {
-            console.log("Deleted!");
-            loadProducts(); // Refresh UI
-        }
-    } catch (error) {
-        console.error("CORS still blocking:", error);
+    if(confirm("Remove from store?")) {
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        loadProducts();
     }
 }
 
 function checkout() {
-    if (cart.length === 0) {
-        alert("Your cart is empty! Add some items before checking out.");
-        return;
-    }
-
-    // Calculate final total for the alert
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    const formattedTotal = total.toLocaleString('en-IN', {
-        style: 'currency',
-        currency: 'INR'
-    });
-
-    alert(`Order Placed Successfully!\nTotal Amount: ${formattedTotal}\n\nThank you for shopping at MyStore 2026.`);
-    
-    // Clear the cart after successful checkout
+    if (cart.length === 0) return alert("Cart empty!");
+    alert("Order Successful!! \nThankyou for shopping from HIE .");
     cart = [];
     updateCartUI();
-}
-
-async function filterCategory() {
-    const selectedCategory = document.getElementById("categoryFilter").value;
-    
-    // 1. Fetch all products from your Spring Boot API
-    const res = await fetch(API_URL);
-    const allProducts = await res.json();
-
-    // 2. Filter logic
-    if (selectedCategory === "all") {
-        renderProducts(allProducts);
-    } else {
-        const filtered = allProducts.filter(p => 
-            p.category && p.category.toLowerCase() === selectedCategory.toLowerCase()
-        );
-        renderProducts(filtered);
-    }
-}
-
-async function addProduct() {
-    const name = document.getElementById("nameInput").value;
-    const price = document.getElementById("priceInput").value;
-    const category = document.getElementById("categoryInput").value; // Get category from dropdown
-
-    if (!name || !price) {
-        alert("Please fill all fields");
-        return;
-    }
-
-    await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            name: name, 
-            price: parseFloat(price), 
-            category: category 
-        })
-    });
-
-    loadProducts(); // Refresh the list
 }

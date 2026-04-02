@@ -2,40 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>HIE STORE | 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIE Store | 2026</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
-        <h2>MyStore</h2>
+        <h2><I>HIE Store</I></h2>
         <div class="search-controls">
-            <input type="text" id="search" placeholder="Search..." onkeyup="searchProducts()">
-            <select id="categoryFilter" onchange="filterCategory()">
-                <option value="all">All Categories</option>
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing</option>
-            </select>
+            <input type="text" id="search" placeholder="Search products..." onkeyup="searchProducts()">
         </div>
     </header>
 
     <main class="container">
         <section class="form-container">
-            <h3>Add New Product</h3>
-            <select id="nameInput">
-                <option value="" disabled selected>Select Product</option>
-                <option value="Backpack">Backpack</option>
-                <option value="OnePlus Buds">OnePlus Buds</option>
-                <option value="Iphone">Iphone</option>
-                <option value="Android Phone">Android Phone</option>
-                <option value="Bodycone">Bodycone</option>
-                <option value="Top">Top</option>
-            </select>
-            <input type="number" id="priceInput" placeholder="Price (₹)">
-            <select id="categoryInput">
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing</option>
-            </select>
-            <button onclick="addProduct()">Add Product</button>
+            <h3>Click a Product to Select</h3>
+            <div class="selection-gallery">
+                <div class="selectable-item" onclick="selectTemplate('Iphone')">
+                    <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=150"></div>
+                    <span>Iphone</span>
+                </div>
+                <div class="selectable-item" onclick="selectTemplate('Laptop')">
+                    <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=150"></div>
+                    <span>Laptop</span>
+                </div>
+                <div class="selectable-item" onclick="selectTemplate('Android Phone')">
+                    <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150"></div>
+                    <span>Android</span>
+                </div>
+                <div class="selectable-item" onclick="selectTemplate('OnePlus Buds')">
+                    <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=150"></div>
+                    <span>Buds</span>
+                </div>
+                <div class="selectable-item" onclick="selectTemplate('Smart Watch')">
+                    <div class="img-wrapper"><img src="https://img.icons8.com/color/96/apple-watch-apps.png"></div>
+                    <span>Watch</span>
+                </div>
+                <div class="selectable-item" onclick="selectTemplate('Backpack')">
+                    <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=150"></div>
+                    <span>Backpack</span>
+                </div>
+                <div class="selectable-item" onclick="selectTemplate('Top')">
+                    <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=150"></div>
+                    <span>Top</span>
+                </div>
+                <div class="selectable-item" onclick="selectTemplate('Sneakers')">
+                    <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=150"></div>
+                    <span>Sneakers</span>
+                </div>
+                <div class="selectable-item" onclick="selectTemplate('Sunglasses')">
+                    <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=150"></div>
+                    <span>Glasses</span>
+                </div>
+            </div>
+
+            <div class="add-bar">
+                <input type="text" id="nameInput" readonly placeholder="Selected Product">
+                <input type="number" id="priceInput" placeholder="Price (₹)">
+                <input type="hidden" id="categoryInput">
+                <button id="addBtn" onclick="addProduct()" disabled>Add to Store</button>
+            </div>
         </section>
 
         <div class="main-content">
@@ -46,7 +72,7 @@
                 <h3>Your Cart</h3>
                 <ul id="cart"></ul>
                 <div id="cart-total"><strong>Total: ₹0.00</strong></div>
-                <button onclick="checkout()" style="width:100%; margin-top:10px;">Checkout</button>
+                <button class="btn-checkout" onclick="checkout()">Place Order</button>
             </aside>
         </div>
     </main>
