@@ -13,26 +13,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ecommerce.ecommerce.model.Product;
-import com.ecommerce.ecommerce.service.ProductService;
+import com.ecommerce.ecommerce.repository.ProductRepository;
 
 @RestController
 @RequestMapping("/api/products")
-@CrossOrigin(origins = "http://127.0.0.1:5500") // Allows your Live Server to talk to the backend
+@CrossOrigin(origins = {
+    "http://127.0.0.1:5500", 
+    "http://127.0.0.1:5501", 
+    "http://localhost:5500", 
+    "http://localhost:5501", 
+    "https://your-github-username.github.io" 
+})
 public class ProductController {
 
     @Autowired
-    private ProductService service;
+    private ProductRepository repository;
 
     @GetMapping
-    public List<Product> getAll() { return service.getAllProducts(); }
+    public List<Product> getAll() { return repository.findAll(); }
 
     @PostMapping
-    public Product add(@RequestBody Product product) { return service.addProduct(product); }
+    public Product add(@RequestBody Product product) { return repository.save(product); }
 
-    // This method was likely being blocked by the browser
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        service.deleteProduct(id);
-        return "Product deleted successfully";
-    }
+    public void delete(@PathVariable Long id) { repository.deleteById(id); }
 }

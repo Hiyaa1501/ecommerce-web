@@ -1,4 +1,5 @@
 const API_URL = "https://your-render-app-name.onrender.com/api/products";
+
 let cart = [];
 
 const productTemplates = {
