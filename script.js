@@ -1,4 +1,4 @@
-const API_URL = "https://your-render-app-name.onrender.com/api/products";
+const API_URL = 'https://ecommerce-web-97xr.onrender.com';
 
 let cart = [];
 
