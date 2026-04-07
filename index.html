@@ -8,7 +8,7 @@
 </head>
 <body>
     <header class="navbar">
-        <h2><I></I></h2>
+        <h2>HIE Store</h2>
         <div class="search-controls">
             <input type="text" id="search" placeholder="Search products..." onkeyup="searchProducts()">
         </div>
@@ -18,39 +18,39 @@
         <section class="form-container">
             <h3>Click a Product to Select</h3>
             <div class="selection-gallery">
-                <div class="selectable-item" onclick="selectTemplate('Iphone')">
+                <div class="selectable-item" onclick="selectTemplate('Iphone', event)">
                     <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=150"></div>
                     <span>Iphone</span>
                 </div>
-                <div class="selectable-item" onclick="selectTemplate('Laptop')">
+                <div class="selectable-item" onclick="selectTemplate('Laptop', event)">
                     <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=150"></div>
                     <span>Laptop</span>
                 </div>
-                <div class="selectable-item" onclick="selectTemplate('Android Phone')">
+                <div class="selectable-item" onclick="selectTemplate('Android Phone', event)">
                     <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150"></div>
                     <span>Android</span>
                 </div>
-                <div class="selectable-item" onclick="selectTemplate('OnePlus Buds')">
+                <div class="selectable-item" onclick="selectTemplate('OnePlus Buds', event)">
                     <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=150"></div>
                     <span>Buds</span>
                 </div>
-                <div class="selectable-item" onclick="selectTemplate('Smart Watch')">
+                <div class="selectable-item" onclick="selectTemplate('Smart Watch', event)">
                     <div class="img-wrapper"><img src="https://img.icons8.com/color/96/apple-watch-apps.png"></div>
                     <span>Watch</span>
                 </div>
-                <div class="selectable-item" onclick="selectTemplate('Backpack')">
+                <div class="selectable-item" onclick="selectTemplate('Backpack', event)">
                     <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=150"></div>
                     <span>Backpack</span>
                 </div>
-                <div class="selectable-item" onclick="selectTemplate('Top')">
+                <div class="selectable-item" onclick="selectTemplate('Top', event)">
                     <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=150"></div>
                     <span>Top</span>
                 </div>
-                <div class="selectable-item" onclick="selectTemplate('Sneakers')">
+                <div class="selectable-item" onclick="selectTemplate('Sneakers', event)">
                     <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=150"></div>
                     <span>Sneakers</span>
                 </div>
-                <div class="selectable-item" onclick="selectTemplate('Sunglasses')">
+                <div class="selectable-item" onclick="selectTemplate('Sunglasses', event)">
                     <div class="img-wrapper"><img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=150"></div>
                     <span>Glasses</span>
                 </div>
@@ -68,6 +68,7 @@
             <div class="products-section">
                 <div id="product-list" class="product-grid"></div>
             </div>
+            
             <aside class="cart-section">
                 <h3>Your Cart</h3>
                 <ul id="cart"></ul>
@@ -76,6 +77,7 @@
             </aside>
         </div>
     </main>
+
     <script src="script.js"></script>
 </body>
 </html>

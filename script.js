@@ -16,8 +16,8 @@ const productTemplates = {
 
 window.onload = loadProducts;
 
-// Step 1: Selection Logic
-function selectTemplate(name) {
+// Step 1: Selection Logic (Added 'e' for event handling)
+function selectTemplate(name, e) {
     const template = productTemplates[name];
     if (template) {
         document.getElementById("nameInput").value = name;
@@ -28,9 +28,9 @@ function selectTemplate(name) {
         btn.disabled = false;
         btn.style.opacity = "1";
 
+        // Remove active class from others and add to current
         document.querySelectorAll('.selectable-item').forEach(el => el.classList.remove('active'));
-        // Highlighting the selected item
-        event.currentTarget.classList.add('active');
+        if (e) e.currentTarget.classList.add('active');
     }
 }
 
@@ -40,14 +40,18 @@ async function addProduct() {
     const price = document.getElementById("priceInput").value;
     const category = document.getElementById("categoryInput").value;
 
+    if(!name) return alert("Select a product first!");
+
     await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, price: parseFloat(price), category })
     });
     
+    // Reset selection
     document.getElementById("addBtn").disabled = true;
-    loadProducts(); // Refresh store list
+    document.querySelectorAll('.selectable-item').forEach(el => el.classList.remove('active'));
+    loadProducts(); 
 }
 
 // Step 3: Display Store Items
@@ -56,7 +60,10 @@ async function loadProducts() {
         const res = await fetch(API_URL);
         const data = await res.json();
         renderProducts(data);
-    } catch (err) { console.log("Backend offline..."); }
+    } catch (err) { 
+        console.log("Backend offline..."); 
+        document.getElementById("product-list").innerHTML = "<p>Server connecting... please wait.</p>";
+    }
 }
 
 function renderProducts(products) {
@@ -64,6 +71,7 @@ function renderProducts(products) {
     const fallback = "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=400";
 
     list.innerHTML = products.map(p => {
+        // Find the image from our template using a case-insensitive search
         const key = Object.keys(productTemplates).find(k => k.toLowerCase() === p.name.toLowerCase());
         const img = key ? productTemplates[key].img : fallback;
 
@@ -83,13 +91,11 @@ function renderProducts(products) {
     }).join('');
 }
 
-// THE "INVENTORY" LOGIC: Move from Store to Cart
 async function addToCart(name, price, id) {
-    // Add to Cart Array
     cart.push({ name, price });
     updateCartUI();
 
-    // Delete from Store DB so it disappears from the shelf
+    // Remove from Database so it's "sold out"
     await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
     loadProducts(); 
 }
@@ -110,7 +116,7 @@ async function searchProducts() {
 }
 
 async function deleteProduct(id) {
-    if(confirm("Remove from store?")) {
+    if(confirm("Remove from store permanently?")) {
         await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
         loadProducts();
     }
@@ -118,7 +124,7 @@ async function deleteProduct(id) {
 
 function checkout() {
     if (cart.length === 0) return alert("Cart empty!");
-    alert("Order Successful!! \nThankyou for shopping from HIE .");
+    alert("Order Successful!! \nThank you for shopping from HIE.");
     cart = [];
     updateCartUI();
 }
