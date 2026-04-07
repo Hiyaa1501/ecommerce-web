@@ -22,7 +22,7 @@ import com.ecommerce.ecommerce.repository.ProductRepository;
     "http://127.0.0.1:5501", 
     "http://localhost:5500", 
     "http://localhost:5501", 
-    "https://your-github-username.github.io" 
+    "https://hiyaa1501.github.io"
 })
 public class ProductController {
 
